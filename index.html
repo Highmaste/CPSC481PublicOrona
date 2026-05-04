@@ -172,12 +172,24 @@ function applyYear(yr){
   evts.forEach(eid=>{
     const ev=EVENTS.find(e=>e.id===eid);if(!ev)return;
     let jm=evFx(ev,'WA');
+    if(eid==='ubi'){
+      if(sim.john.wealth < 15) jm *= 1.35;
+      else if(sim.john.wealth < 35) jm *= 1.25;
+      else if(sim.john.wealth >= 80 && sim.john.wealth < 92) jm *= 0.94;
+      else if(sim.john.wealth >= 92) jm *= 0.88;
+    }
     sim.investments.forEach(iid=>{const inv=INVS.find(i=>i.id===iid);if(inv)jm*=invBx(inv,eid);});
     const pw=sim.john.wealth;
     sim.john.wealth=Math.min(99,Math.max(1,sim.john.wealth*jm));
     logEntry(yr,ev.label,jm,pw,sim.john.wealth);
     sim.people.forEach(p=>{
       let pm=evFx(ev,p.state);
+      if(eid==='ubi'){
+        if(p.wealth < 15) pm *= 1.35;
+        else if(p.wealth < 35) pm *= 1.25;
+        else if(p.wealth >= 80 && p.wealth < 92) pm *= 0.94;
+        else if(p.wealth >= 92) pm *= 0.88;
+      }
       p.investments.forEach(iid=>{const inv=INVS.find(i=>i.id===iid);if(inv)pm*=invBx(inv,eid);});
       p.wealth=Math.min(99,Math.max(1,p.wealth*pm+(Math.random()-.5)*1.5));
     });
