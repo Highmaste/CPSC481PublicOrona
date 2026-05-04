@@ -1,0 +1,382 @@
+
+<h2 class="sr-only">American Life Simulator 1976–2026: configure events per year, persistent investments, track John Smith in Washington State and 49 named individuals on a US map</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+#sr{font-family:var(--font-mono,monospace);font-size:13px;border:0.5px solid var(--color-border-tertiary);border-radius:8px;overflow:hidden;}
+.hdr{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;border-bottom:0.5px solid var(--color-border-tertiary);}
+.htitle{font-size:14px;font-weight:500;color:var(--color-text-primary);letter-spacing:0.03em;}
+.ybadge{background:#042C53;color:#B5D4F4;padding:3px 10px;border-radius:4px;font-size:12px;font-weight:500;letter-spacing:0.07em;}
+.ctrls{display:flex;align-items:center;gap:7px;padding:6px 12px;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);}
+.cb{padding:4px 11px;border:0.5px solid var(--color-border-secondary);border-radius:4px;background:var(--color-background-primary);color:var(--color-text-primary);font-size:11px;cursor:pointer;font-family:var(--font-mono,monospace);}
+.cb:hover{background:var(--color-background-secondary);}
+.cb.pri{background:#042C53;color:#B5D4F4;border-color:#185FA5;}
+.body{display:grid;grid-template-columns:265px 1fr;}
+.lp{border-right:0.5px solid var(--color-border-tertiary);display:flex;flex-direction:column;}
+.ps{padding:8px 10px;border-bottom:0.5px solid var(--color-border-tertiary);}
+.pl{font-size:9px;letter-spacing:0.09em;color:var(--color-text-secondary);text-transform:uppercase;margin-bottom:5px;}
+.eg{display:grid;grid-template-columns:1fr 1fr;gap:3px;}
+.eb{padding:4px 5px;border:0.5px solid var(--color-border-tertiary);border-radius:4px;background:var(--color-background-primary);color:var(--color-text-secondary);font-size:10px;cursor:pointer;text-align:center;line-height:1.3;font-family:var(--font-mono,monospace);}
+.eb:hover{border-color:#185FA5;color:var(--color-text-primary);}
+.eb.on{background:#042C53;color:#85B7EB;border-color:#185FA5;}
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:3px;}
+.ib{padding:4px 5px;border:0.5px solid var(--color-border-tertiary);border-radius:4px;background:var(--color-background-primary);color:var(--color-text-secondary);font-size:10px;cursor:pointer;text-align:center;font-family:var(--font-mono,monospace);transition:background 0.15s,color 0.15s,border-color 0.15s;}
+.ib:hover{border-color:#0F6E56;color:var(--color-text-primary);}
+.ib.on{background:#04342C;color:#5DCAA5;border-color:#0F6E56;}
+.jp{padding:9px 10px;flex:1;}
+.bdisp{display:flex;align-items:baseline;gap:6px;margin:3px 0 6px;}
+.bn{font-size:14px;font-weight:500;}
+.bd{font-size:11px;}
+.bd.up{color:#1D9E75;}.bd.dn{color:#D85A30;}
+.wbw{height:5px;background:var(--color-background-tertiary);border-radius:3px;margin-bottom:7px;}
+.wb{height:5px;border-radius:3px;transition:width 0.5s,background 0.5s;}
+.elog{max-height:95px;overflow-y:auto;}
+.le{font-size:10px;color:var(--color-text-secondary);padding:2px 0;border-bottom:0.5px solid var(--color-border-tertiary);line-height:1.5;}
+.le span{color:var(--color-text-primary);}
+.rp{display:flex;flex-direction:column;}
+.ms{flex:1;padding:8px 10px;position:relative;min-height:320px;}
+.cs{height:158px;padding:5px 12px 8px;border-top:0.5px solid var(--color-border-tertiary);}
+.tt{position:absolute;background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:6px;padding:7px 10px;font-size:11px;pointer-events:none;z-index:20;display:none;color:var(--color-text-primary);min-width:148px;line-height:1.65;}
+.lgd{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px;}
+.li{display:flex;align-items:center;gap:3px;font-size:9px;color:var(--color-text-secondary);}
+.ld{width:8px;height:8px;border-radius:50%;}
+</style>
+
+<div id="sr">
+  <div class="hdr">
+    <div class="htitle">american life simulator &mdash; 1976 to 2026</div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:10px;color:var(--color-text-secondary);">john smith &middot; WA</span>
+      <span class="ybadge" id="cy">1976</span>
+    </div>
+  </div>
+  <div class="ctrls">
+    <button class="cb pri" id="btnRun">&#9654; run</button>
+    <button class="cb" id="btnStep">+1 yr</button>
+    <button class="cb" id="btnReset">&#8635; reset</button>
+    <span style="font-size:10px;color:var(--color-text-secondary);margin-left:auto;">speed</span>
+    <input type="range" id="spd" min="1" max="5" value="3" step="1" style="width:60px;">
+    <span style="font-size:10px;color:var(--color-text-secondary);" id="spdv">3x</span>
+  </div>
+  <div class="body">
+    <div class="lp">
+      <div class="ps">
+        <div class="pl">events for year <span id="eyl">1976</span></div>
+        <div class="eg" id="evgrid"></div>
+      </div>
+      <div class="ps">
+        <div class="pl">john's investments (stay on until toggled off)</div>
+        <div class="ig" id="invgrid"></div>
+      </div>
+      <div class="jp">
+        <div class="pl">john smith &mdash; wealth bracket</div>
+        <div class="bdisp">
+          <div class="bn" id="bname">Working Class</div>
+          <div class="bd" id="bdelta"></div>
+        </div>
+        <div class="wbw"><div class="wb" id="wbar" style="width:22%;background:#378ADD;"></div></div>
+        <div class="pl" style="margin-bottom:3px;">event log</div>
+        <div class="elog" id="elog"></div>
+      </div>
+    </div>
+    <div class="rp">
+      <div class="ms">
+        <div class="pl" style="margin-bottom:3px;">49 others &mdash; hover dot for name, bracket &amp; investments</div>
+        <svg id="umap" viewBox="0 0 960 540" style="width:100%;display:block;"></svg>
+        <div class="lgd" id="lgd"></div>
+        <div class="tt" id="mtt"></div>
+      </div>
+      <div class="cs">
+        <div class="pl" style="margin-bottom:3px;">john's wealth index over time</div>
+        <div style="position:relative;height:128px;"><canvas id="wcht" role="img" aria-label="John Smith wealth index line chart 1976 to present year"></canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const EVENTS=[
+  {id:'famine',   label:'Famine',       fx:{CA:.87,TX:.82,MN:.84,NE:.83,IA:.83,_:.93}},
+  {id:'drought',  label:'Drought',      fx:{CA:.73,TX:.80,AZ:.76,NM:.78,NV:.81,FL:.90,WA:.94,_:.96}},
+  {id:'disaster', label:'Nat. Disaster',fx:{FL:.70,LA:.68,TX:.76,CA:.78,NC:.83,WA:.86,_:.93}},
+  {id:'war',      label:'War',          fx:{_:.88}},
+  {id:'recession',label:'Recession',    fx:{NY:.78,CA:.80,IL:.81,WA:.82,_:.83}},
+  {id:'pandemic', label:'Pandemic',     fx:{NY:.73,CA:.76,IL:.78,FL:.80,WA:.79,_:.86}},
+  {id:'ubi',      label:'UBI',          fx:{_:1.13}},
+  {id:'housing',  label:'Free Housing', fx:{CA:1.17,NY:1.20,WA:1.16,_:1.10}},
+  {id:'techboom', label:'Tech Boom',    fx:{CA:1.27,WA:1.25,TX:1.14,NY:1.18,_:1.07}},
+  {id:'oilboom',  label:'Oil Boom',     fx:{TX:1.30,AK:1.27,ND:1.24,OK:1.22,WY:1.19,_:1.05}},
+  {id:'policy',   label:'New Policy',   fx:{_:1.04}},
+  {id:'infra',    label:'Infra. Bill',  fx:{_:1.08}},
+];
+
+const INVS=[
+  {id:'defense',    label:'Defense',     bx:{war:1.27,recession:1.06,_:1.02}},
+  {id:'energy',     label:'Energy',      bx:{oilboom:1.32,drought:1.15,disaster:1.10,_:1.03}},
+  {id:'tech',       label:'Tech',        bx:{techboom:1.37,pandemic:1.22,ubi:1.10,_:1.04}},
+  {id:'realestate', label:'Real Estate', bx:{housing:1.23,techboom:1.12,disaster:.80,_:1.02}},
+  {id:'agriculture',label:'Agriculture', bx:{famine:1.27,drought:.73,ubi:1.06,_:1.01}},
+  {id:'healthcare', label:'Healthcare',  bx:{pandemic:1.32,ubi:1.10,_:1.03}},
+];
+
+const BRACKETS=[
+  {name:'Poverty',       min:0,  max:15, color:'#E24B4A'},
+  {name:'Working Class', min:15, max:35, color:'#BA7517'},
+  {name:'Lower Middle',  min:35, max:50, color:'#888780'},
+  {name:'Middle Class',  min:50, max:65, color:'#378ADD'},
+  {name:'Upper Middle',  min:65, max:80, color:'#1D9E75'},
+  {name:'Wealthy',       min:80, max:92, color:'#7F77DD'},
+  {name:'Ultra-Wealthy', min:92, max:100,color:'#D4537E'},
+];
+
+const FN=['James','Mary','Robert','Patricia','Michael','Linda','William','Barbara','David','Susan','Richard','Jessica','Joseph','Karen','Thomas','Sarah','Charles','Lisa','Christopher','Nancy','Daniel','Betty','Matthew','Margaret','Anthony','Sandra','Mark','Ashley','Donald','Dorothy','Steven','Kimberly','Paul','Emily','Andrew','Donna','Joshua','Michelle','Kenneth','Carol','Kevin','Amanda','Brian','Melissa','George','Deborah','Timothy','Stephanie'];
+const LN=['Johnson','Williams','Brown','Jones','Garcia','Miller','Davis','Martinez','Hernandez','Lopez','Wilson','Anderson','Taylor','Thomas','Moore','Jackson','Martin','Lee','Perez','Thompson','White','Harris','Sanchez','Clark','Ramirez','Lewis','Robinson','Walker','Young','Allen','King','Wright','Scott','Torres','Nguyen','Hill','Flores','Green','Adams','Nelson','Baker','Hall','Rivera','Campbell','Mitchell','Carter','Roberts','Evans','Turner'];
+const SA={'Alabama':'AL','Alaska':'AK','Arizona':'AZ','Arkansas':'AR','California':'CA','Colorado':'CO','Connecticut':'CT','Delaware':'DE','Florida':'FL','Georgia':'GA','Hawaii':'HI','Idaho':'ID','Illinois':'IL','Indiana':'IN','Iowa':'IA','Kansas':'KS','Kentucky':'KY','Louisiana':'LA','Maine':'ME','Maryland':'MD','Massachusetts':'MA','Michigan':'MI','Minnesota':'MN','Mississippi':'MS','Missouri':'MO','Montana':'MT','Nebraska':'NE','Nevada':'NV','New Hampshire':'NH','New Jersey':'NJ','New Mexico':'NM','New York':'NY','North Carolina':'NC','North Dakota':'ND','Ohio':'OH','Oklahoma':'OK','Oregon':'OR','Pennsylvania':'PA','Rhode Island':'RI','South Carolina':'SC','South Dakota':'SD','Tennessee':'TN','Texas':'TX','Utah':'UT','Vermont':'VT','Virginia':'VA','Washington':'WA','West Virginia':'WV','Wisconsin':'WI','Wyoming':'WY'};
+const PSTATES=['CA','TX','NY','FL','IL','PA','OH','GA','NC','MI','AZ','CO','TN','MO','OR','MN','WI','VA','NV','LA','KY','AL','SC','OK','AR','UT','KS','NE','NM','MS','ID','WY','MT','SD','ND','ME','NH','VT','CT','RI','DE','MD','WV','HI','AK','IN','IA','MA','NJ'];
+
+function seededRand(seed){let s=seed^0x9e3779b9;s=Math.imul(s^(s>>>16),0x45d9f3b);s=Math.imul(s^(s>>>16),0x45d9f3b);return(s^(s>>>16))>>>0;}
+function makePeople(){
+  return PSTATES.map((st,i)=>{
+    const s1=seededRand(i*7919+1),s2=seededRand(i*6271+3),s3=seededRand(i*3571+7),s4=seededRand(i*4523+11);
+    const name=FN[s1%FN.length]+' '+LN[s2%LN.length];
+    const ids=INVS.map(v=>v.id);
+    const i1=s3%ids.length;let i2=s4%ids.length;if(i2===i1)i2=(i2+1)%ids.length;
+    return{id:i,state:st,name,wealth:15+(s1%65),investments:[ids[i1],ids[i2]],cx:null,cy:null};
+  });
+}
+
+function getBracket(w){return BRACKETS.find(b=>w>=b.min&&w<b.max)||BRACKETS[BRACKETS.length-1];}
+function evFx(ev,st){return ev.fx[st]??ev.fx._;}
+function invBx(inv,eid){return inv.bx[eid]??inv.bx._;}
+
+const sim={
+  year:1976,running:false,timer:null,
+  john:{wealth:22},
+  history:[{year:1976,wealth:22}],
+  people:makePeople(),
+  yearEvents:{},
+  investments:new Set(),
+};
+
+function syncInvButtons(){
+  document.querySelectorAll('.ib').forEach(b=>{
+    b.classList.toggle('on', sim.investments.has(b.dataset.id));
+  });
+}
+
+function applyYear(yr){
+  const evts=sim.yearEvents[yr]||[];
+  if(!evts.length)return;
+  evts.forEach(eid=>{
+    const ev=EVENTS.find(e=>e.id===eid);if(!ev)return;
+    let jm=evFx(ev,'WA');
+    sim.investments.forEach(iid=>{const inv=INVS.find(i=>i.id===iid);if(inv)jm*=invBx(inv,eid);});
+    const pw=sim.john.wealth;
+    sim.john.wealth=Math.min(99,Math.max(1,sim.john.wealth*jm));
+    logEntry(yr,ev.label,jm,pw,sim.john.wealth);
+    sim.people.forEach(p=>{
+      let pm=evFx(ev,p.state);
+      p.investments.forEach(iid=>{const inv=INVS.find(i=>i.id===iid);if(inv)pm*=invBx(inv,eid);});
+      p.wealth=Math.min(99,Math.max(1,p.wealth*pm+(Math.random()-.5)*1.5));
+    });
+  });
+}
+
+function logEntry(yr,label,mult,pw,nw){
+  const log=document.getElementById('elog');
+  const d=document.createElement('div');d.className='le';
+  const pct=Math.round((mult-1)*100),sign=pct>=0?'+':'';
+  const pb=getBracket(pw).name,nb=getBracket(nw).name;
+  const bc=pb!==nb?` \u2192 <span>${nb}</span>`:'';
+  d.innerHTML=`<span>${yr}</span> &mdash; ${label} <span style="color:${mult>=1?'#1D9E75':'#D85A30'}">${sign}${pct}%</span>${bc}`;
+  log.prepend(d);
+}
+
+function updateUI(){
+  document.getElementById('cy').textContent=sim.year;
+  document.getElementById('eyl').textContent=sim.year;
+  document.querySelectorAll('.eb').forEach(b=>{
+    const evts=sim.yearEvents[sim.year]||[];
+    b.classList.toggle('on',evts.includes(b.dataset.id));
+  });
+  syncInvButtons();
+  const b=getBracket(sim.john.wealth);
+  const bn=document.getElementById('bname');
+  bn.textContent=b.name;bn.style.color=b.color;
+  const prev=sim.history.length>1?sim.history[sim.history.length-2]:null;
+  const del=document.getElementById('bdelta');
+  if(prev){
+    const d=sim.john.wealth-prev.wealth;
+    del.textContent=(d>=0?'\u25b2':'\u25bc')+' '+Math.abs(d).toFixed(1);
+    del.className='bd '+(d>=0?'up':'dn');
+  }
+  const wb=document.getElementById('wbar');
+  wb.style.width=sim.john.wealth.toFixed(1)+'%';
+  wb.style.background=b.color;
+  updateMap();updateChart();
+}
+
+function stepYear(){
+  if(sim.year>=2026){stopSim();return;}
+  applyYear(sim.year);
+  sim.year++;
+  sim.john.wealth=Math.min(99,Math.max(1,sim.john.wealth+(Math.random()-.47)*1.4));
+  sim.people.forEach(p=>{p.wealth=Math.min(99,Math.max(1,p.wealth+(Math.random()-.5)*.9));});
+  sim.history.push({year:sim.year,wealth:sim.john.wealth});
+  updateUI();
+}
+
+let mapReady=false,msvg=null,mpath=null;
+function wColor(w){return getBracket(w).color;}
+
+function initMap(){
+  msvg=d3.select('#umap');
+  mpath=d3.geoPath(d3.geoAlbersUsa().scale(960).translate([480,270]));
+  const lgd=document.getElementById('lgd');
+  BRACKETS.forEach(b=>{lgd.innerHTML+=`<span class="li"><span class="ld" style="background:${b.color}"></span>${b.name}</span>`;});
+  d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(us=>{
+    const feats=topojson.feature(us,us.objects.states).features;
+    msvg.selectAll('path.st').data(feats).join('path').attr('class','st')
+      .attr('d',mpath).attr('stroke','rgba(128,128,128,0.25)').attr('stroke-width',.5)
+      .attr('fill','var(--color-background-secondary)');
+    const snm={};feats.forEach(f=>{const a=SA[f.properties.name];if(a)snm[a]=f;});
+    sim.people.forEach((p,i)=>{
+      const f=snm[p.state];if(!f)return;
+      const c=mpath.centroid(f);if(!c||isNaN(c[0]))return;
+      p.cx=c[0]+((i*7919)%28)-14;p.cy=c[1]+((i*6271)%28)-14;
+    });
+    const waF=snm['WA'];
+    if(waF){
+      const wc=mpath.centroid(waF);
+      if(wc&&!isNaN(wc[0])){
+        msvg.append('circle').attr('class','jdot').attr('r',7)
+          .attr('cx',wc[0]).attr('cy',wc[1])
+          .attr('fill','#378ADD').attr('stroke','#fff').attr('stroke-width',1.8)
+          .style('cursor','pointer')
+          .on('mouseover',function(ev){
+            const tt=document.getElementById('mtt');
+            tt.style.display='block';tt.style.left=(ev.offsetX+12)+'px';tt.style.top=(ev.offsetY-8)+'px';
+            const br=getBracket(sim.john.wealth);
+            const il=Array.from(sim.investments).map(id=>INVS.find(i=>i.id===id)?.label||id).join(', ')||'none';
+            tt.innerHTML=`<strong>John Smith</strong> &middot; WA<br>Bracket: <span style="color:${br.color}">${br.name}</span><br>Index: ${sim.john.wealth.toFixed(1)}<br>Investments: ${il}`;
+          })
+          .on('mouseout',()=>{document.getElementById('mtt').style.display='none';});
+        msvg.append('text').attr('x',wc[0]+9).attr('y',wc[1]+4)
+          .attr('font-size','9px').attr('fill','#185FA5').attr('font-family','monospace').text('John S.');
+      }
+    }
+    msvg.selectAll('circle.per').data(sim.people).join('circle').attr('class','per')
+      .attr('r',5).attr('cx',d=>d.cx).attr('cy',d=>d.cy)
+      .attr('fill',d=>wColor(d.wealth)).attr('stroke','rgba(255,255,255,.55)').attr('stroke-width',.8)
+      .style('cursor','pointer')
+      .on('mouseover',function(ev,d){
+        const tt=document.getElementById('mtt');
+        tt.style.display='block';tt.style.left=(ev.offsetX+12)+'px';tt.style.top=(ev.offsetY-8)+'px';
+        const br=getBracket(d.wealth);
+        const il=d.investments.map(id=>INVS.find(i=>i.id===id)?.label||id).join(', ');
+        tt.innerHTML=`<strong>${d.name}</strong> &middot; ${d.state}<br>Bracket: <span style="color:${br.color}">${br.name}</span><br>Index: ${d.wealth.toFixed(1)}<br>Investments: ${il}`;
+      })
+      .on('mouseout',()=>{document.getElementById('mtt').style.display='none';});
+    mapReady=true;updateMap();
+  });
+}
+
+function updateMap(){
+  if(!mapReady)return;
+  msvg.selectAll('circle.per').data(sim.people).attr('fill',d=>wColor(d.wealth));
+  msvg.select('circle.jdot').attr('fill',wColor(sim.john.wealth));
+}
+
+let wchart=null;
+function initChart(){
+  const ctx=document.getElementById('wcht').getContext('2d');
+  wchart=new Chart(ctx,{
+    type:'line',
+    data:{labels:[1976],datasets:[{label:'Wealth',data:[22],borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.07)',borderWidth:1.5,pointRadius:0,fill:true,tension:.35}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{font:{size:9},color:'#888',maxTicksLimit:10,autoSkip:true},grid:{color:'rgba(128,128,128,0.08)'}},
+        y:{min:0,max:100,ticks:{font:{size:9},color:'#888',stepSize:25},grid:{color:'rgba(128,128,128,0.08)'}}
+      }
+    }
+  });
+}
+
+function updateChart(){
+  if(!wchart)return;
+  wchart.data.labels=sim.history.map(h=>h.year);
+  wchart.data.datasets[0].data=sim.history.map(h=>Math.round(h.wealth));
+  wchart.update('none');
+}
+
+function buildEventBtns(){
+  const g=document.getElementById('evgrid');g.innerHTML='';
+  EVENTS.forEach(ev=>{
+    const b=document.createElement('button');
+    b.className='eb';b.dataset.id=ev.id;b.textContent=ev.label;
+    b.onclick=()=>{
+      const yr=sim.year;
+      if(!sim.yearEvents[yr])sim.yearEvents[yr]=[];
+      if(sim.yearEvents[yr].includes(ev.id)){sim.yearEvents[yr]=sim.yearEvents[yr].filter(e=>e!==ev.id);b.classList.remove('on');}
+      else{sim.yearEvents[yr].push(ev.id);b.classList.add('on');}
+    };
+    g.appendChild(b);
+  });
+}
+
+function buildInvBtns(){
+  const g=document.getElementById('invgrid');g.innerHTML='';
+  INVS.forEach(inv=>{
+    const b=document.createElement('button');
+    b.className='ib';b.dataset.id=inv.id;b.textContent=inv.label;
+    b.onclick=()=>{
+      if(sim.investments.has(inv.id)){sim.investments.delete(inv.id);}
+      else{sim.investments.add(inv.id);}
+      syncInvButtons();
+    };
+    g.appendChild(b);
+  });
+}
+
+function startSim(){
+  if(sim.running)return;
+  sim.running=true;
+  document.getElementById('btnRun').innerHTML='&#9646;&#9646; pause';
+  const sp=parseInt(document.getElementById('spd').value);
+  sim.timer=setInterval(()=>{if(sim.year>=2026){stopSim();return;}stepYear();},1100/sp);
+}
+
+function stopSim(){
+  sim.running=false;clearInterval(sim.timer);
+  document.getElementById('btnRun').innerHTML='&#9654; run';
+}
+
+function resetSim(){
+  stopSim();
+  sim.year=1976;sim.john={wealth:22};
+  sim.history=[{year:1976,wealth:22}];
+  sim.yearEvents={};sim.investments.clear();
+  const old=sim.people;sim.people=makePeople();
+  sim.people.forEach((p,i)=>{p.cx=old[i]?.cx;p.cy=old[i]?.cy;});
+  document.querySelectorAll('.eb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('elog').innerHTML='';
+  document.getElementById('bdelta').textContent='';
+  updateUI();
+}
+
+document.getElementById('btnRun').onclick=()=>{if(sim.running)stopSim();else startSim();};
+document.getElementById('btnStep').onclick=()=>{stopSim();stepYear();};
+document.getElementById('btnReset').onclick=resetSim;
+document.getElementById('spd').oninput=function(){
+  document.getElementById('spdv').textContent=this.value+'x';
+  if(sim.running){stopSim();startSim();}
+};
+
+buildEventBtns();
+buildInvBtns();
+initMap();initChart();
+updateUI();
+</script>
