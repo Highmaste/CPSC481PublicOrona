@@ -104,7 +104,7 @@ const EVENTS=[
   {id:'war',      label:'War',          fx:{_:.88}},
   {id:'recession',label:'Recession',    fx:{NY:.78,CA:.80,IL:.81,WA:.82,_:.83}},
   {id:'pandemic', label:'Pandemic',     fx:{NY:.73,CA:.76,IL:.78,FL:.80,WA:.79,_:.86}},
-  {id:'ubi',      label:'UBI',          fx:{_:1}},
+  {id:'ubi',      label:'UBI',          fx:{_:1.03}},
   {id:'housing',  label:'Subsid. Housing', fx:{CA:1.17,NY:1.20,WA:1.16,_:1.10}},
   {id:'techboom', label:'Tech Boom',    fx:{CA:1.27,WA:1.25,TX:1.14,NY:1.18,_:1.07}},
   {id:'oilboom',  label:'Oil Boom',     fx:{TX:1.30,AK:1.27,ND:1.24,OK:1.22,WY:1.19,_:1.05}},
@@ -175,7 +175,7 @@ function applyYear(yr){
     if(eid==='ubi'){
       if(sim.john.wealth < 15) jm *= 1.25;
       else if(sim.john.wealth < 35) jm *= 1.14;
-      else if(sim.john.wealth >= 80 && sim.john.wealth < 92) jm *= 0.96;
+      else if(sim.john.wealth >= 80 && sim.john.wealth < 92) jm *= 0.93;
       else if(sim.john.wealth >= 92) jm *= 0.88;
     }
     sim.investments.forEach(iid=>{const inv=INVS.find(i=>i.id===iid);if(inv)jm*=invBx(inv,eid);});
@@ -187,7 +187,7 @@ function applyYear(yr){
       if(eid==='ubi'){
         if(p.wealth < 15) pm *= 1.25;
         else if(p.wealth < 35) pm *= 1.14;
-        else if(p.wealth >= 80 && p.wealth < 92) pm *= 0.96;
+        else if(p.wealth >= 80 && p.wealth < 92) pm *= 0.93;
         else if(p.wealth >= 92) pm *= 0.88;
       }
       p.investments.forEach(iid=>{const inv=INVS.find(i=>i.id===iid);if(inv)pm*=invBx(inv,eid);});
